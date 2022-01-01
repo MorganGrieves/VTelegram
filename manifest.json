@@ -21,8 +21,7 @@
                 "app/content.js"
             ],
             "css": [
-                "src/css/style.css",
-                "src/css/settings.css"
+                "src/css/style.css"
             ]
         }
     ],

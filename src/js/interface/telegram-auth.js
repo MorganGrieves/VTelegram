@@ -44,18 +44,18 @@ class TelegramAuth {
                 formDom.getElementById('validation_other_phone').addEventListener('click',
                     (event) => this.clean());
 
-                document.getElementsByClassName('popup_box_container')[0].appendChild(formDom.body.firstElementChild);
+                document.getElementsByClassName('vtelegram_popup_box_container')[0].appendChild(formDom.body.firstElementChild);
             });
     }
 
     show() {
         this._formInsertionPromise
-            .then(() => telegram_auth_form.classList.remove('hidden'));
+            .then(() => telegram_auth_form.classList.remove('vtelegram_hidden'));
     }
 
     hide() {
         this._formInsertionPromise
-            .then(() => telegram_auth_form.classList.add('hidden'));
+            .then(() => telegram_auth_form.classList.add('vtelegram_hidden'));
     }
 
     clean() {

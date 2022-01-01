@@ -1,8 +1,7 @@
 const Emitter = require('./event-emitter').default;
 const Errors = require('./../constants').errors;
-const Settings = require('./settings').default;
 const TgLib = require('./../tg-lib');
-const ExportLib = require("./../export/export-lib");
+const ExportLib = require('./../export/export-lib');
 
 const mainForm = new MainForm();
 export default mainForm;
@@ -22,9 +21,9 @@ class MainForm {
             })
             .then(data => {
                 let formDom = new DOMParser().parseFromString(data, 'text/html');
-                formDom.getElementsByClassName('box_x_button')[0].addEventListener('click', event => this.close());
+                formDom.getElementsByClassName('vtelegram_box_x_button')[0].addEventListener('click', event => this.close());
                 document.getElementById('box_layer').appendChild(formDom.body.firstElementChild);
-
+                
                 document.addEventListener('click',
                     (event) => {
                         let isClickInside = main_form.contains(event.target);
@@ -87,14 +86,14 @@ class MainForm {
                 document.getElementById('box_layer_wrap').style.display = 'block';
                 document.getElementById('box_layer_bg').style.display = 'block';
                 document.body.style.overflow = 'hidden';
-                document.getElementById('main_form').classList.remove('hidden');
+                document.getElementById('main_form').classList.remove('vtelegram_hidden');
 
                 this.hideBody();
 
                 const result = await TgLib.isAuthorized();
                 console.log(result);
 
-                if (!result)
+               if (!result)
                     this._telegramAuth.show();
                 else
                     this._settings.show();
@@ -114,13 +113,13 @@ class MainForm {
                 document.getElementById('box_layer_wrap').style.display = 'none';
                 document.getElementById('box_layer_bg').style.display = 'none';
                 document.body.style.overflow = 'auto';
-                document.getElementById('main_form').classList.add('hidden');
+                document.getElementById('main_form').classList.add('vtelegram_hidden');
             });
     }
 
     hideBody() {
         let boxes = document.getElementsByClassName('vtelegram_box');
         for (let box of boxes)
-            box.classList.add('hidden');
+            box.classList.add('vtelegram_hidden');
     }
 }

@@ -25,18 +25,18 @@ class StartImport {
                     (event) => {
                         Emitter.emit('event:telegram-exit', {});
                     });
-                document.getElementsByClassName('popup_box_container')[0].appendChild(formDom.body.firstElementChild);
+                document.getElementsByClassName('vtelegram_popup_box_container')[0].appendChild(formDom.body.firstElementChild);
             })
     }
 
     show() {
         this._formInsertionPromise
-            .then(() => import_start_form.classList.remove('hidden'));
+            .then(() => import_start_form.classList.remove('vtelegram_hidden'));
     }
 
     hide() {
         this._formInsertionPromise
-            .then(() => import_start_form.classList.add('hidden'));
+            .then(() => import_start_form.classList.add('vtelegram_hidden'));
     }
 
     clean() {

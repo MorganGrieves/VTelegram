@@ -32,15 +32,15 @@ class Settings {
                     (event) => {
                         let currentLink = document.getElementById('settings_addr').value;
                         currentCode = currentLink.slice(Constants.TELEGRAM_CNV_PATH.length, currentLink.length);
-                        document.getElementById('chgaddr').classList.add('unfolded');
+                        document.getElementById('chgaddr').classList.add('vtelegram_unfolded');
                     });
 
                 formDom.getElementById('settings_addr').addEventListener('input',
                     (event) => {
                         if (event.target.value.length === 0)
-                            document.getElementById('settings_address_submit').classList.add('button_disabled');
+                            document.getElementById('settings_address_submit').classList.add('vtelegram_button_disabled');
                         else
-                            document.getElementById('settings_address_submit').classList.remove('button_disabled');
+                            document.getElementById('settings_address_submit').classList.remove('vtelegram_button_disabled');
                     });
                 
                 formDom.getElementById('settings_cancel_button').addEventListener('click',
@@ -54,7 +54,7 @@ class Settings {
                             document.getElementById('settings_address_telegram').nextSibling.textContent = currentCode;
                         }
 
-                        document.getElementById('chgaddr').classList.remove('unfolded');
+                        document.getElementById('chgaddr').classList.remove('vtelegram_unfolded');
                     });
 
                 formDom.getElementById('settings_address_submit').addEventListener('click', this.settingsAddressHandler);
@@ -71,7 +71,7 @@ class Settings {
 
                 document.addEventListener('click', 
                     (event) => {
-                        const iddPopups = document.getElementsByClassName("idd_popup");
+                        const iddPopups = document.getElementsByClassName("vtelegram_idd_popup");
                         for (let popup of iddPopups) {
                             let isClickInside = popup.contains(event.target);
                             if (!isClickInside)
@@ -90,21 +90,21 @@ class Settings {
                         Emitter.emit('event:telegram-exit', {});
                     });
                 
-                document.getElementsByClassName('popup_box_container')[0].appendChild(formDom.body.firstElementChild);
+                main_form.appendChild(formDom.body.firstElementChild);
 
-                for (let item of document.querySelectorAll('.vtelegram_box .settings_narrow_row'))
+                for (let item of document.querySelectorAll('.vtelegram_box .vtelegram_settings_narrow_row'))
                     this.setDropDownToElement(item);
             })
     }
 
     show() {
         this._formInsertionPromise
-            .then(() => settings_form.classList.remove('hidden'));
+            .then(() => settings_form.classList.remove('vtelegram_hidden'));
     }
 
     hide() {
         this._formInsertionPromise
-            .then(() => settings_form.classList.add('hidden'));
+            .then(() => settings_form.classList.add('vtelegram_hidden'));
     }
 
     clean() {
@@ -116,18 +116,18 @@ class Settings {
                 document.getElementById('settings_address_telegram').innerText = '';
                 document.getElementById('settings_address_telegram').nextSibling.textContent = 'Адрес не введен';
                 document.getElementById('settings_addr').value = '';
-                document.getElementById('chgaddr').classList.remove('unfolded');
+                document.getElementById('chgaddr').classList.remove('vtelegram_unfolded');
 
-                for (let input of document.getElementsByClassName('blind_label'))
+                for (let input of document.getElementsByClassName('vtelegram_blind_label'))
                     input.checked = 0;
 
-                for (let elem of document.querySelectorAll('.vtelegram_box .settings_narrow_row')) {
-                    elem.getElementsByClassName('idd_popup')[0].style.display = 'none';
-                    elem.getElementsByClassName('idd_selected_value')[0].innerText = 'Прямой импорт';
-                    elem.getElementsByClassName('idd_hl')[0].classList.remove('idd_hl');
-                    elem.getElementsByClassName('default')[0].classList.add('idd_hl');
-                    elem.getElementsByClassName('idd_header')[0].innerText = 'Прямой импорт';
-                    elem.getElementsByClassName('idd_wrap')[0].classList.add('disabled');
+                for (let elem of document.querySelectorAll('.vtelegram_box .vtelegram_settings_narrow_row')) {
+                    elem.getElementsByClassName('vtelegram_idd_popup')[0].style.display = 'none';
+                    elem.getElementsByClassName('vtelegram_idd_selected_value')[0].innerText = 'Прямой импорт';
+                    elem.getElementsByClassName('vtelegram_idd_hl')[0].classList.remove('vtelegram_idd_hl');
+                    elem.getElementsByClassName('default')[0].classList.add('vtelegram_idd_hl');
+                    elem.getElementsByClassName('vtelegram_idd_header')[0].innerText = 'Прямой импорт';
+                    elem.getElementsByClassName('vtelegram_idd_wrap')[0].classList.add('vtelegram_disabled');
                 }
                 
                 this.videoImportType = Constants.EXPORT_MEDIA_NONE;
@@ -146,50 +146,50 @@ class Settings {
 
             document.getElementById('settings_address_telegram').innerText = Constants.TELEGRAM_CNV_PATH;
             document.getElementById('settings_address_telegram').nextSibling.textContent = convCode;
-            document.getElementById('chgaddr').classList.remove('unfolded');
+            document.getElementById('chgaddr').classList.remove('vtelegram_unfolded');
         } else
             this.errorHandler(err);
     }
 
     setDropDownToElement(elem) {
-        let selectedValue = elem.getElementsByClassName('idd_selected_value')[0];
+        let selectedValue = elem.getElementsByClassName('vtelegram_idd_selected_value')[0];
 
         selectedValue.addEventListener('click',
             (event) => {
-                let header = elem.getElementsByClassName('idd_header')[0];
+                let header = elem.getElementsByClassName('vtelegram_idd_header')[0];
                 header.innerText = event.target.innerText;
-                elem.getElementsByClassName('idd_popup')[0].style.display = 'block';
+                elem.getElementsByClassName('vtelegram_idd_popup')[0].style.display = 'block';
             });
 
-        elem.getElementsByClassName('idd_header')[0].addEventListener('click',
+        elem.getElementsByClassName('vtelegram_idd_header')[0].addEventListener('click',
             (event) => {
-                elem.getElementsByClassName('idd_popup')[0].style.display = 'none';
+                elem.getElementsByClassName('vtelegram_idd_popup')[0].style.display = 'none';
             });
 
-        for (let iddItem of elem.querySelectorAll('.idd_items_wrap .idd_item')) {
+        for (let iddItem of elem.querySelectorAll('.vtelegram_idd_items_wrap .vtelegram_idd_item')) {
             iddItem.addEventListener('mouseenter',
                 (event) => {
                     this._isCursorInsideIdd = true;
-                    event.target.classList.add('idd_hover');
+                    event.target.classList.add('vtelegram_idd_hover');
                 });
 
             iddItem.addEventListener('mouseleave',
                 (event) => {
                     this._isCursorInsideIdd = false;
-                    event.target.classList.remove('idd_hover');
+                    event.target.classList.remove('vtelegram_idd_hover');
                 });
 
             iddItem.addEventListener('click',
                 (event) => {
-                    for (let item of elem.getElementsByClassName('idd_popup'))
+                    for (let item of elem.getElementsByClassName('vtelegram_idd_popup'))
                         item.style.display = 'none';
 
-                    let textValue = iddItem.getElementsByClassName('idd_item_name')[0].innerText;
+                    let textValue = iddItem.getElementsByClassName('vtelegram_idd_item_name')[0].innerText;
                     
-                    elem.getElementsByClassName('idd_selected_value')[0].innerText = textValue;
-                    elem.getElementsByClassName('idd_popup')[0].style.display = 'none';
-                    elem.getElementsByClassName('idd_hl')[0].classList.remove('idd_hl');
-                    iddItem.classList.add('idd_hl');
+                    elem.getElementsByClassName('vtelegram_idd_selected_value')[0].innerText = textValue;
+                    elem.getElementsByClassName('vtelegram_idd_popup')[0].style.display = 'none';
+                    elem.getElementsByClassName('vtelegram_idd_hl')[0].classList.remove('vtelegram_idd_hl');
+                    iddItem.classList.add('vtelegram_idd_hl');
                     
                     this.changeTypeImport(event.currentTarget);
                 });
@@ -220,19 +220,19 @@ class Settings {
     changeCheckboxSelection(elem) {
         
         if (elem.checked) {
-            let comboBox = document.querySelector('#' + elem.id + '~.idd_wrap');
-            comboBox.getElementsByClassName('idd_popup')[0].style.display = 'none';
-            comboBox.classList.add('disabled');
+            let comboBox = document.querySelector('#' + elem.id + '~.vtelegram_idd_wrap');
+            comboBox.getElementsByClassName('vtelegram_idd_popup')[0].style.display = 'none';
+            comboBox.classList.add('vtelegram_disabled');
             
             let type = elem.id.slice(elem.id.lastIndexOf('_') + 1);
             this.setImportToNone(type);
             
             elem.checked = 0;
         } else {
-            let comboBox = document.querySelector('#' + elem.id + '~.idd_wrap');
-            comboBox.classList.remove('disabled');
+            let comboBox = document.querySelector('#' + elem.id + '~.vtelegram_idd_wrap');
+            comboBox.classList.remove('vtelegram_disabled');
             
-            let selectedElem = comboBox.getElementsByClassName('idd_hl')[0];
+            let selectedElem = comboBox.getElementsByClassName('vtelegram_idd_hl')[0];
             this.changeTypeImport(selectedElem);
             
             elem.checked = 1;
