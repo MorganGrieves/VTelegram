@@ -15,13 +15,13 @@ class StartImport {
             .then(data => {
                 const formDom = new DOMParser().parseFromString(data, 'text/html');
 
-                formDom.getElementById('start_import_button').addEventListener('click',
+                formDom.getElementById('vtelegram_start_import_button').addEventListener('click',
                     (event) => Emitter.emit('event:start-import', {}));
 
-                formDom.getElementById('start_import_back_button').addEventListener('click',
+                formDom.getElementById('vtelegram_start_import_back_button').addEventListener('click',
                     (event) => Emitter.emit('event:start-import-back', {}));
                 
-                formDom.getElementById('start_import_exit_telegram_button').addEventListener('click', 
+                formDom.getElementById('vtelegram_start_import_exit_telegram_button').addEventListener('click', 
                     (event) => {
                         Emitter.emit('event:telegram-exit', {});
                     });
@@ -31,12 +31,12 @@ class StartImport {
 
     show() {
         this._formInsertionPromise
-            .then(() => import_start_form.classList.remove('vtelegram_hidden'));
+            .then(() => document.getElementById('vtelegram_import_start_form').classList.remove('vtelegram_hidden'));
     }
 
     hide() {
         this._formInsertionPromise
-            .then(() => import_start_form.classList.add('vtelegram_hidden'));
+            .then(() => document.getElementById('vtelegram_import_start_form').classList.add('vtelegram_hidden'));
     }
 
     clean() {

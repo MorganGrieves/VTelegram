@@ -19,13 +19,13 @@ class PeopleImport {
             })
             .then((data) => {
                 let formDom = new DOMParser().parseFromString(data, 'text/html');
-                formDom.getElementById('import_people_next_button').addEventListener('click',
+                formDom.getElementById('vtelegram_import_people_next_button').addEventListener('click',
                     (event) => Emitter.emit('event:people-import-completed', {}));
 
-                formDom.getElementById('people_import_back_button').addEventListener('click',
+                formDom.getElementById('vtelegram_people_import_back_button').addEventListener('click',
                     (event) => Emitter.emit('event:people-import-back', {}));
                 
-                formDom.getElementById('people_import_exit_telegram_button').addEventListener('click', 
+                formDom.getElementById('vtelegram_people_import_exit_telegram_button').addEventListener('click', 
                     (event) => {
                         Emitter.emit('event:telegram-exit', {});
                     });
@@ -39,7 +39,7 @@ class PeopleImport {
     show() {
         this._formInsertionPromise
             .then(() => {
-                people_import_form.classList.remove('vtelegram_hidden');
+                document.getElementById('vtelegram_people_import_form').classList.remove('vtelegram_hidden');
 
                 console.log(Settings.gChat)
                 if (!this._usersLoaded) {
@@ -51,7 +51,7 @@ class PeopleImport {
 
     hide() {
         this._formInsertionPromise
-            .then(() => people_import_form.classList.add('vtelegram_hidden'));
+            .then(() => document.getElementById('vtelegram_people_import_form').classList.add('vtelegram_hidden'));
     }
 
     clean() {
@@ -62,13 +62,13 @@ class PeopleImport {
     userDataHandler = event => {
         //!!!!!!!!!! здесь получаем данные по номеру телефона и @user нику и отправляем
         let idAttr = event.currentTarget.getAttribute('id');
-        let userId = idAttr.slice('settings_address_submit'.length, idAttr.length);
-        let data = document.getElementById(`flist_acc${userId}`).value;
+        let userId = idAttr.slice('vtelegram_settings_address_submit'.length, idAttr.length);
+        let data = document.getElementById(`vtelegram_flist_acc${userId}`).value;
         let error = this.sendData(data);
 
         if (error === Errors.NO_ERROR) {
             this.clearPeopleImportErrorHTML(userId);
-            document.getElementById(`flist_item_wrap${userId}`).classList.remove('vtelegram_unfolded');
+            document.getElementById(`vtelegram_flist_item_wrap${userId}`).classList.remove('vtelegram_unfolded');
         } else
             this.errorHandler(userId, error);
         event.stopPropagation();
@@ -99,12 +99,12 @@ class PeopleImport {
 
     clearPeopleImportErrorHTML(userId) {
         this._formInsertionPromise
-            .then(() => document.getElementById(`flist_error_acc${userId}`).innerHTML = '');
+            .then(() => document.getElementById(`vtelegram_flist_error_acc${userId}`).innerHTML = '');
     }
 
     peopleImportErrorHTML(userId, errorString) {
         this._formInsertionPromise
-            .then(() => document.getElementById(`flist_error_acc${userId}`).innerHTML =
+            .then(() => document.getElementById(`vtelegram_flist_error_acc${userId}`).innerHTML =
                 `<div class="vtelegram_msg msg error"><div class="msg_text">${errorString}</div></div>`);
     }
 
@@ -131,8 +131,8 @@ class PeopleImport {
 
                             let userListElem = new DOMParser();
                             userListElem = userListElem.parseFromString(
-                                `<div id="flist_item_wrap${user['id']}" class="vtelegram_flist_line">
-                            <div class="vtelegram_flist_item_wrap vtelegram_flist_info_block" id="flist_item${user['id']}">
+                                `<div id="vtelegram_flist_item_wrap${user['id']}" class="vtelegram_flist_line">
+                            <div class="vtelegram_flist_item_wrap vtelegram_flist_info_block" id="vtelegram_flist_item${user['id']}">
                                 <div class="vtelegram_flist_item clear_fix" tabindex="0" role="link" aria-label="${user['name']}">
                                     <div class="vtelegram_flist_item_img">
                                         <img class="vtelegram_flist_item_thumb" src="${user['photo']}" alt="${user['name']}">
@@ -147,14 +147,14 @@ class PeopleImport {
                                     </div>
                                     <div class="vtelegram_flist_item_name">${user['name']}</div>
                                 </div>
-                                <div id="flist_error_acc${user['id']}"></div>
+                                <div id="vtelegram_flist_error_acc${user['id']}"></div>
                                 <div class="vtelegram_settings_row vtelegram_clear_fix">
                                     <div class="vtelegram_settings_label">Телефон или никнейм</div>
-                                    <a id="flist_cancel_button${user['id']}" class="vtelegram_settings_right_control" tabindex="0" role="link">Отмена</a>
+                                    <a id="vtelegram_flist_cancel_button${user['id']}" class="vtelegram_settings_right_control" tabindex="0" role="link">Отмена</a>
                                     <div class="vtelegram_settings_labeled">
-                                        <div class="vtelegram_prefix_input_wrap" id="flist_acc_wrap${user['id']}" style="width: 200px;">
+                                        <div class="vtelegram_prefix_input_wrap" id="vtelegram_flist_acc_wrap${user['id']}" style="width: 200px;">
                                             <div class="vtelegram_prefix_input_field">
-                                                <input id="flist_acc${user['id']}" type="text" class="vtelegram_prefix_input" maxlength="20" value="" autocomplete="off" style="padding-left: 9px;">
+                                                <input id="vtelegram_flist_acc${user['id']}" type="text" class="vtelegram_prefix_input" maxlength="20" value="" autocomplete="off" style="padding-left: 9px;">
                                                 <div class="vtelegram_prefix_input_border"></div>
                                             </div>
                                         </div>
@@ -163,13 +163,13 @@ class PeopleImport {
                                     </div>
                                 </div>
                                 <div class="vtelegram_settings_row_button_wrap">
-                                    <button id="settings_address_submit${user['id']}" class="vtelegram_flat_button">Добавить аккаунт</button>
+                                    <button id="vtelegram_settings_address_submit${user['id']}" class="vtelegram_flat_button">Добавить аккаунт</button>
                                 </div>
                             </div> 
                         </div>`
                                 , 'text/html');
 
-                            userListElem.getElementById(`flist_item_wrap${user['id']}`).addEventListener('click',
+                            userListElem.getElementById(`vtelegram_flist_item_wrap${user['id']}`).addEventListener('click',
                                 (event) => {
                                     for (let userDiv of document.getElementsByClassName('vtelegram_flist_line'))
                                         userDiv.classList.remove('vtelegram_unfolded');
@@ -178,18 +178,18 @@ class PeopleImport {
                                 }
                             );
 
-                            userListElem.getElementById(`flist_cancel_button${user['id']}`).addEventListener('click',
+                            userListElem.getElementById(`vtelegram_flist_cancel_button${user['id']}`).addEventListener('click',
                                 (event) => {
                                     let idAttr = event.currentTarget.getAttribute('id');
-                                    let userId = idAttr.slice('flist_cancel_button'.length, idAttr.length);
-                                    document.getElementById(`flist_item_wrap${userId}`).classList.remove('vtelegram_unfolded');
+                                    let userId = idAttr.slice('vtelegram_flist_cancel_button'.length, idAttr.length);
+                                    document.getElementById(`vtelegram_flist_item_wrap${userId}`).classList.remove('vtelegram_unfolded');
                                     event.stopPropagation();
                                 }
                             );
 
-                            userListElem.getElementById(`settings_address_submit${user['id']}`).addEventListener('click', this.userDataHandler);
+                            userListElem.getElementById(`vtelegram_settings_address_submit${user['id']}`).addEventListener('click', this.userDataHandler);
 
-                            document.getElementById('flist_all_list').appendChild(userListElem.body.firstElementChild);
+                            document.getElementById('vtelegram_flist_all_list').appendChild(userListElem.body.firstElementChild);
                         }
                     }
                 }
@@ -198,7 +198,7 @@ class PeopleImport {
 
     cleanMemberList() {
         for (let user of this._convUserData)
-            document.getElementById(`flist_item_wrap${user['id']}`).remove();
+            document.getElementById(`vtelegram_flist_item_wrap${user['id']}`).remove();
 
         this._convUserData = [];
     }

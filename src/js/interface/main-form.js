@@ -26,7 +26,7 @@ class MainForm {
                 
                 document.addEventListener('click',
                     (event) => {
-                        let isClickInside = main_form.contains(event.target);
+                        let isClickInside = document.getElementById('vtelegram_main_form').contains(event.target);
                         if (!isClickInside)
                             this.close();
                     }, true);
@@ -86,7 +86,7 @@ class MainForm {
                 document.getElementById('box_layer_wrap').style.display = 'block';
                 document.getElementById('box_layer_bg').style.display = 'block';
                 document.body.style.overflow = 'hidden';
-                document.getElementById('main_form').classList.remove('vtelegram_hidden');
+                document.getElementById('vtelegram_main_form').classList.remove('vtelegram_hidden');
 
                 this.hideBody();
 
@@ -113,7 +113,7 @@ class MainForm {
                 document.getElementById('box_layer_wrap').style.display = 'none';
                 document.getElementById('box_layer_bg').style.display = 'none';
                 document.body.style.overflow = 'auto';
-                document.getElementById('main_form').classList.add('vtelegram_hidden');
+                document.getElementById('vtelegram_main_form').classList.add('vtelegram_hidden');
             });
     }
 

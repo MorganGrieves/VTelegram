@@ -28,46 +28,46 @@ class Settings {
 
                 //адрес беседы
                 let currentCode = '';
-                formDom.getElementById('settings_change_button').addEventListener('click',
+                formDom.getElementById('vtelegram_settings_change_button').addEventListener('click',
                     (event) => {
-                        let currentLink = document.getElementById('settings_addr').value;
+                        let currentLink = document.getElementById('vtelegram_settings_addr').value;
                         currentCode = currentLink.slice(Constants.TELEGRAM_CNV_PATH.length, currentLink.length);
-                        document.getElementById('chgaddr').classList.add('vtelegram_unfolded');
+                        document.getElementById('vtelegram_chgaddr').classList.add('vtelegram_unfolded');
                     });
 
-                formDom.getElementById('settings_addr').addEventListener('input',
+                formDom.getElementById('vtelegram_settings_addr').addEventListener('input',
                     (event) => {
                         if (event.target.value.length === 0)
-                            document.getElementById('settings_address_submit').classList.add('vtelegram_button_disabled');
+                            document.getElementById('vtelegram_settings_address_submit').classList.add('vtelegram_button_disabled');
                         else
-                            document.getElementById('settings_address_submit').classList.remove('vtelegram_button_disabled');
+                            document.getElementById('vtelegram_settings_address_submit').classList.remove('vtelegram_button_disabled');
                     });
                 
-                formDom.getElementById('settings_cancel_button').addEventListener('click',
+                formDom.getElementById('vtelegram_settings_cancel_button').addEventListener('click',
                     (event) => {
                         if (currentCode.length === 0) {
-                            document.getElementById('settings_address_telegram').innerText = '';
-                            document.getElementById('settings_address_telegram').nextSibling.textContent = 'Адрес не введен';
-                            document.getElementById('settings_addr').value = '';
+                            document.getElementById('vtelegram_settings_address_telegram').innerText = '';
+                            document.getElementById('vtelegram_settings_address_telegram').nextSibling.textContent = 'Адрес не введен';
+                            document.getElementById('vtelegram_settings_addr').value = '';
                         } else {
-                            document.getElementById('settings_address_telegram').innerText = Constants.TELEGRAM_CNV_PATH;
-                            document.getElementById('settings_address_telegram').nextSibling.textContent = currentCode;
+                            document.getElementById('vtelegram_settings_address_telegram').innerText = Constants.TELEGRAM_CNV_PATH;
+                            document.getElementById('vtelegram_settings_address_telegram').nextSibling.textContent = currentCode;
                         }
 
-                        document.getElementById('chgaddr').classList.remove('vtelegram_unfolded');
+                        document.getElementById('vtelegram_chgaddr').classList.remove('vtelegram_unfolded');
                     });
 
-                formDom.getElementById('settings_address_submit').addEventListener('click', this.settingsAddressHandler);
+                formDom.getElementById('vtelegram_settings_address_submit').addEventListener('click', this.settingsAddressHandler);
                 
                 //чекбоксы с материалами
-                formDom.getElementById('settings_check_video_label').addEventListener('click',
-                    (event) => this.changeCheckboxSelection(document.getElementById('settings_check_video')));
+                formDom.getElementById('vtelegram_settings_check_video_label').addEventListener('click',
+                    (event) => this.changeCheckboxSelection(document.getElementById('vtelegram_settings_check_video')));
 
-                formDom.getElementById('settings_check_image_label').addEventListener('click',
-                    (event) => this.changeCheckboxSelection(document.getElementById('settings_check_image')));
+                formDom.getElementById('vtelegram_settings_check_image_label').addEventListener('click',
+                    (event) => this.changeCheckboxSelection(document.getElementById('vtelegram_settings_check_image')));
 
-                formDom.getElementById('settings_check_doc_label').addEventListener('click',
-                    (event) => this.changeCheckboxSelection(document.getElementById('settings_check_doc')));
+                formDom.getElementById('vtelegram_settings_check_doc_label').addEventListener('click',
+                    (event) => this.changeCheckboxSelection(document.getElementById('vtelegram_settings_check_doc')));
 
                 document.addEventListener('click', 
                     (event) => {
@@ -79,18 +79,18 @@ class Settings {
                         }
                     }, true);
                 
-                formDom.getElementById('settings_next_button').addEventListener('click',
+                formDom.getElementById('vtelegram_settings_next_button').addEventListener('click',
                     (event) => {
                         Emitter.emit('event:settings-completed', {});
                     });
                 
-                formDom.getElementById('settings_exit_telegram_button').addEventListener('click',
+                formDom.getElementById('vtelegram_settings_exit_telegram_button').addEventListener('click',
                     async (event) => {
                         await TgLib.logOut()
                         Emitter.emit('event:telegram-exit', {});
                     });
                 
-                main_form.appendChild(formDom.body.firstElementChild);
+                document.getElementsByClassName('vtelegram_popup_box_container')[0].appendChild(formDom.body.firstElementChild);
 
                 for (let item of document.querySelectorAll('.vtelegram_box .vtelegram_settings_narrow_row'))
                     this.setDropDownToElement(item);
@@ -99,12 +99,12 @@ class Settings {
 
     show() {
         this._formInsertionPromise
-            .then(() => settings_form.classList.remove('vtelegram_hidden'));
+            .then(() => document.getElementById('vtelegram_settings_form').classList.remove('vtelegram_hidden'));
     }
 
     hide() {
         this._formInsertionPromise
-            .then(() => settings_form.classList.add('vtelegram_hidden'));
+            .then(() => document.getElementById('vtelegram_settings_form').classList.add('vtelegram_hidden'));
     }
 
     clean() {
@@ -113,10 +113,10 @@ class Settings {
                 this.clearConvAddressErrorHTML();
                 this.gChat = null;
 
-                document.getElementById('settings_address_telegram').innerText = '';
-                document.getElementById('settings_address_telegram').nextSibling.textContent = 'Адрес не введен';
-                document.getElementById('settings_addr').value = '';
-                document.getElementById('chgaddr').classList.remove('vtelegram_unfolded');
+                document.getElementById('vtelegram_settings_address_telegram').innerText = '';
+                document.getElementById('vtelegram_settings_address_telegram').nextSibling.textContent = 'Адрес не введен';
+                document.getElementById('vtelegram_settings_addr').value = '';
+                document.getElementById('vtelegram_chgaddr').classList.remove('vtelegram_unfolded');
 
                 for (let input of document.getElementsByClassName('vtelegram_blind_label'))
                     input.checked = 0;
@@ -138,15 +138,15 @@ class Settings {
     
     settingsAddressHandler = async (event) => {
         //!!!!! обработка ссылки на беседу телеграм
-        let convLink = document.getElementById('settings_addr').value;
+        let convLink = document.getElementById('vtelegram_settings_addr').value;
         let err = await this.sendConvAddress(convLink);
 
         if (err === Errors.NO_ERROR) {
             this.clearConvAddressErrorHTML();
 
-            document.getElementById('settings_address_telegram').innerText = Constants.TELEGRAM_CNV_PATH;
-            document.getElementById('settings_address_telegram').nextSibling.textContent = convCode;
-            document.getElementById('chgaddr').classList.remove('vtelegram_unfolded');
+            document.getElementById('vtelegram_settings_address_telegram').innerText = Constants.TELEGRAM_CNV_PATH;
+            document.getElementById('vtelegram_settings_address_telegram').nextSibling.textContent = convCode;
+            document.getElementById('vtelegram_chgaddr').classList.remove('vtelegram_unfolded');
         } else
             this.errorHandler(err);
     }
@@ -197,11 +197,11 @@ class Settings {
     }
 
     convAddressErrorHTML(errorString) {
-        document.getElementById('settings_error_addr').innerHTML = `<div class="msg error"><div class="msg_text">${errorString}</div></div>`;
+        document.getElementById('vtelegram_settings_error_addr').innerHTML = `<div class="msg error"><div class="msg_text">${errorString}</div></div>`;
     }
 
     clearConvAddressErrorHTML() {
-        document.getElementById('settings_error_addr').innerHTML = '';
+        document.getElementById('vtelegram_settings_error_addr').innerHTML = '';
     }
 
     async sendConvAddress(link) {
@@ -260,9 +260,11 @@ class Settings {
     }
     
     changeTypeImport(elem) {
-        let fileType = elem.id.substr(0, elem.id.indexOf('_'));
-        let importType = elem.id.substr(elem.id.indexOf('_') + 1, elem.id.length);
         
+        let erasedElem = elem.id.substr(elem.id.indexOf('_') + 1, elem.id.length);
+        let fileType = erasedElem.substr(0, erasedElem.indexOf('_'));
+        let importType = erasedElem.substr(erasedElem.indexOf('_') + 1, erasedElem.length);
+
         switch (fileType) {
             case 'video':
                 this.videoImportType = this.strToImportType(importType);
