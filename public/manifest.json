@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "VTelegram",
+    "description": "Importing your dialogs from VK to Telegram",
+    "version": "0.0.1",
+    "author": "Purple Team",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "oauth2": {
+        "client_id": "516717924129-pcm31all0chsqiktm1rrle98m0ekrbmm.apps.googleusercontent.com",
+        "scopes": [
+            "https://www.googleapis.com/auth/drive"
+        ]
+    },
+    "icons": {
+        "128": "icon128.png"
+    }
+}
