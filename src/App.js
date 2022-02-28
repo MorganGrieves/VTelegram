@@ -1,24 +1,28 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import '@happysanta/vk-app-ui/dist/vkappui.css';
+import {Line,Button, P, Progress, Header, Gray, PromoCard, FormLayout, Input, Textarea, Box } from "@happysanta/vk-app-ui";
 import logo from './logo.svg';
 import './App.css';
 
+const divStyle = {
+  float: 'right'
+};
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    return (
+<PromoCard>
+        <div style={{display: 'flex', alignItems: 'center'}}>
+          <div style={{flex: 1}}>
+            <Header>В "Название чата"!</Header>
+            <P><Gray>Собираем данные из чата ВК</Gray></P>
+		    <Progress percent={0.33}/>
+          </div>
+          <div>
+            <Button mode="tertiary" left={true}>Отменить</Button>
+          </div>
+        </div>
+</PromoCard>
   );
 }
 
