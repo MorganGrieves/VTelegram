@@ -9,6 +9,9 @@ export default telegramAuth;
 
 class TelegramAuth {
     _formInsertionPromise = undefined;
+    _resendTimerId = undefined;
+    _timeSeconds = 10;
+
     gPhoneCodeHash = '';
     gPhone = '';
     gFloodTime = '00:00:00';
@@ -42,7 +45,10 @@ class TelegramAuth {
                     });
 
                 formDom.getElementById('vtelegram_validation_other_phone').addEventListener('click',
-                    (event) => this.clean());
+                    (event) => {
+                        this.clean();
+                        this.hideResendCodeBlock();
+                    });
 
                 document.getElementsByClassName('vtelegram_popup_box_container')[0].appendChild(formDom.body.firstElementChild);
             });
@@ -64,6 +70,8 @@ class TelegramAuth {
         this.gPhoneCodeHash = '';
         this.gPhone = '';
         this.gFloodTime = '00:00:00';
+
+        this.clearTimer();
 
         document.getElementById('vtelegram_validation_phone').value = '';
         document.getElementById('vtelegram_validation_code').value = '';
@@ -89,6 +97,9 @@ class TelegramAuth {
             this.showCodeBlock();
             this.setPhoneBlockReadOnly();
             this.hidePhoneButton();
+            this._resendTimerId = this.resetTimer(this._timeSeconds);
+            this.showResendCodeBlock();
+
             document.getElementById('vtelegram_validation_code').focus();
         } else
             this.errorHandler(error);
@@ -104,6 +115,7 @@ class TelegramAuth {
             this.clearPhoneValidationErrorHTML();
             this.setCodeBlockReadOnly();
             this.hideCodeButton();
+            this.clearTimer();
             Emitter.emit('event:auth-completed', {});
         } else
             this.errorHandler(error);
@@ -121,6 +133,10 @@ class TelegramAuth {
             Emitter.emit('event:auth-completed', {});
         } else
             this.errorHandler(error);
+    }
+
+    resendCodeHandler = async event => {
+        this._resendTimerId = await this.resetTimer(this._timeSeconds);
     }
 
     async sendPhone(phone) {
@@ -156,6 +172,10 @@ class TelegramAuth {
             return result.data;
 
         return Errors.NO_ERROR;
+    }
+
+    async resendCode() {
+        //resendCode implementation
     }
 
     showPhoneButton() {
@@ -266,6 +286,15 @@ class TelegramAuth {
             });
     }
 
+    showResendCodeBlock() {
+        document.getElementById('vtelegram_validation_resend').style.display = 'block';
+    }
+
+    hideResendCodeBlock() {
+        console.log('hideResend');
+        document.getElementById('vtelegram_validation_resend').style.display = 'none';
+    }
+
     clearPhoneValidationErrorHTML() {
         this._formInsertionPromise
             .then(() => document.getElementById('vtelegram_validation_submit_result').innerHTML = '');
@@ -275,6 +304,43 @@ class TelegramAuth {
         this._formInsertionPromise
             .then(() => document.getElementById('vtelegram_validation_submit_result').innerHTML =
                 `<div class="vtelegram_msg msg error"><div class="msg_text">${errorString}</div></div>`);
+    }
+
+    startTimer(timeSeconds) {
+        let tId = setInterval(() => {
+
+            let seconds = timeSeconds % 60
+            let minutes = timeSeconds / 60 % 60
+            if (timeSeconds <= 0) {
+                console.log(timeSeconds + ' ' + this._resendTimerId + ' finished');
+                document.getElementById('vtelegram_validation_resend').innerHTML = "<a id=\"validation_resend_lnk\">Отправить код повторно</a>";
+                this.clearTimer();
+                document.getElementById('validation_resend_lnk').addEventListener('click', this.resendCodeHandler);
+            } else {
+                let strTimer = `Отправить код через ${Math.trunc(minutes)}:${seconds}`;
+                document.getElementById('vtelegram_validation_resend').innerHTML = strTimer;
+            }
+            --timeSeconds;
+        }, 1000);
+
+        return tId;
+    }
+
+    resetTimer(timeSeconds) {
+        let seconds = timeSeconds % 60;
+        let minutes = timeSeconds / 60 % 60;
+        let strTimer = `Отправить код через ${Math.trunc(minutes)}:${seconds}`;
+        document.getElementById('vtelegram_validation_resend').innerHTML = strTimer;
+
+        this.clearTimer();
+        return this.startTimer(timeSeconds);
+    }
+
+    clearTimer() {
+        console.log('clear timer ' + this._resendTimerId);
+        if (this._resendTimerId !== undefined)
+            clearInterval(this._resendTimerId);
+        this._resendTimerId = undefined
     }
 
     errorHandler(error) {
@@ -333,6 +399,9 @@ class TelegramAuth {
                 this.setCodeBlockReadOnly();
                 this.hideCodeBlock();
                 this.showPasswordBlock();
+                this.hideResendCodeBlock();
+                this.clearTimer();
+
                 this.phoneValidationErrorHTML(' <b>Ошибка авторизации</b>.<br>Аккаунт защищен двухфакторной авторизацией. Введите пароль.');
                 break;
 
@@ -341,4 +410,3 @@ class TelegramAuth {
         }
     }
 }
-
