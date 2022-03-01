@@ -1,8 +1,8 @@
-const Constants = require("./js/constants");
-const Lib = require('./js/lib');
+const Constants = require("./constants");
+const Lib = require('./lib');
 
-const Drive = require("./js/drive");
-const ExportLib = require('./js/export/export-lib');
+const Drive = require("./drive");
+const ExportLib = require('./export/export-lib');
 
 chrome.tabs.onUpdated.addListener(
     function (tabId, changeInfo, tab) {

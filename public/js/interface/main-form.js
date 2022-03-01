@@ -15,7 +15,7 @@ class MainForm {
     _startImport = undefined;
 
     constructor() {
-        this._formInsertionPromise = fetch(chrome.runtime.getURL('./src/html/main-form.html'))
+        this._formInsertionPromise = fetch(chrome.runtime.getURL('./html/main-form.html'))
             .then(response => {
                 return response.text()
             })

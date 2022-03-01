@@ -19,7 +19,7 @@ class Settings {
    
     
     constructor() {
-        this._formInsertionPromise = fetch(chrome.runtime.getURL('./src/html/settings-form.html'))
+        this._formInsertionPromise = fetch(chrome.runtime.getURL('./html/settings-form.html'))
             .then(response => {
                 return response.text()
             })

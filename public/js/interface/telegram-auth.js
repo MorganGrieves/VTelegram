@@ -14,7 +14,7 @@ class TelegramAuth {
     gFloodTime = '00:00:00';
 
     constructor() {
-        this._formInsertionPromise = fetch(chrome.runtime.getURL('./src/html/telegram-auth-form.html'))
+        this._formInsertionPromise = fetch(chrome.runtime.getURL('./html/telegram-auth-form.html'))
             .then(response => {
                 return response.text();
             })

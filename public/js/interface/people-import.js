@@ -13,7 +13,7 @@ class PeopleImport {
     _usersLoaded = false;
 
     constructor() {
-        this._formInsertionPromise = fetch(chrome.runtime.getURL('./src/html/people-import-form.html'))
+        this._formInsertionPromise = fetch(chrome.runtime.getURL('./html/people-import-form.html'))
             .then(response => {
                 return response.text()
             })
