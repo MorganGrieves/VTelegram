@@ -9,53 +9,59 @@ export default telegramAuth;
 
 class TelegramAuth {
     _formInsertionPromise = undefined;
+    _resendTimerId = undefined;
+    _timeSeconds = 10;
+
     gPhoneCodeHash = '';
     gPhone = '';
     gFloodTime = '00:00:00';
 
     constructor() {
-        this._formInsertionPromise = fetch(chrome.runtime.getURL('./src/html/telegram-auth-form.html'))
+        this._formInsertionPromise = fetch(chrome.runtime.getURL('./html/telegram-auth-form.html'))
             .then(response => {
                 return response.text();
             })
             .then(data => {
                 let formDom = new DOMParser().parseFromString(data, 'text/html');
 
-                formDom.getElementById('validation_send_phone').addEventListener('click', this.sendPhoneHandler);
-                formDom.getElementById('validation_send_code').addEventListener('click', this.sendCodeHandler);
-                formDom.getElementById('validation_send_password').addEventListener('click', this.sendPasswordHandler);
+                formDom.getElementById('vtelegram_validation_send_phone').addEventListener('click', this.sendPhoneHandler);
+                formDom.getElementById('vtelegram_validation_send_code').addEventListener('click', this.sendCodeHandler);
+                formDom.getElementById('vtelegram_validation_send_password').addEventListener('click', this.sendPasswordHandler);
 
-                formDom.getElementById('validation_phone').addEventListener('keydown',
+                formDom.getElementById('vtelegram_validation_phone').addEventListener('keydown',
                     async (event) => {
                         if (event.keyCode == 10 || event.keyCode == 13)
                             await this.sendPhoneHandler(event);
                     });
-                formDom.getElementById('validation_code').addEventListener('keydown',
+                formDom.getElementById('vtelegram_validation_code').addEventListener('keydown',
                     async (event) => {
                         if (event.keyCode == 10 || event.keyCode == 13)
                             await this.sendCodeHandler(event);
                     });
-                formDom.getElementById('validation_password').addEventListener('keydown',
+                formDom.getElementById('vtelegram_validation_password').addEventListener('keydown',
                     async (event) => {
                         if (event.keyCode == 10 || event.keyCode == 13)
                             await this.sendPasswordHandler(event);
                     });
 
-                formDom.getElementById('validation_other_phone').addEventListener('click',
-                    (event) => this.clean());
+                formDom.getElementById('vtelegram_validation_other_phone').addEventListener('click',
+                    (event) => {
+                        this.clean();
+                        this.hideResendCodeBlock();
+                    });
 
-                document.getElementsByClassName('popup_box_container')[0].appendChild(formDom.body.firstElementChild);
+                document.getElementsByClassName('vtelegram_popup_box_container')[0].appendChild(formDom.body.firstElementChild);
             });
     }
 
     show() {
         this._formInsertionPromise
-            .then(() => telegram_auth_form.classList.remove('hidden'));
+            .then(() => vtelegram_auth_form.classList.remove('vtelegram_hidden'));
     }
 
     hide() {
         this._formInsertionPromise
-            .then(() => telegram_auth_form.classList.add('hidden'));
+            .then(() => vtelegram_auth_form.classList.add('vtelegram_hidden'));
     }
 
     clean() {
@@ -65,9 +71,11 @@ class TelegramAuth {
         this.gPhone = '';
         this.gFloodTime = '00:00:00';
 
-        document.getElementById('validation_phone').value = '';
-        document.getElementById('validation_code').value = '';
-        document.getElementById('validation_password').value = '';
+        this.clearTimer();
+
+        document.getElementById('vtelegram_validation_phone').value = '';
+        document.getElementById('vtelegram_validation_code').value = '';
+        document.getElementById('vtelegram_validation_password').value = '';
 
         this.unsetPhoneBlockReadOnly();
         this.showPhoneButton();
@@ -80,7 +88,7 @@ class TelegramAuth {
     }
 
     sendPhoneHandler = async event => {
-        let phone = document.getElementById('validation_phone').value;
+        let phone = document.getElementById('vtelegram_validation_phone').value;
 
         let error = await this.sendPhone(phone);
 
@@ -89,13 +97,16 @@ class TelegramAuth {
             this.showCodeBlock();
             this.setPhoneBlockReadOnly();
             this.hidePhoneButton();
-            document.getElementById('validation_code').focus();
+            this._resendTimerId = this.resetTimer(this._timeSeconds);
+            this.showResendCodeBlock();
+
+            document.getElementById('vtelegram_validation_code').focus();
         } else
             this.errorHandler(error);
     }
 
     sendCodeHandler = async event => {
-        let code = document.getElementById('validation_code').value;
+        let code = document.getElementById('vtelegram_validation_code').value;
 
         let error = await this.sendCode(code);
 
@@ -104,13 +115,14 @@ class TelegramAuth {
             this.clearPhoneValidationErrorHTML();
             this.setCodeBlockReadOnly();
             this.hideCodeButton();
+            this.clearTimer();
             Emitter.emit('event:auth-completed', {});
         } else
             this.errorHandler(error);
     }
 
     sendPasswordHandler = async event => {
-        let password = document.getElementById('validation_password').value;
+        let password = document.getElementById('vtelegram_validation_password').value;
 
         let error = await this.sendPassword(password);
 
@@ -121,6 +133,10 @@ class TelegramAuth {
             Emitter.emit('event:auth-completed', {});
         } else
             this.errorHandler(error);
+    }
+
+    resendCodeHandler = async event => {
+        this._resendTimerId = await this.resetTimer(this._timeSeconds);
     }
 
     async sendPhone(phone) {
@@ -158,123 +174,173 @@ class TelegramAuth {
         return Errors.NO_ERROR;
     }
 
+    async resendCode() {
+        //resendCode implementation
+    }
+
     showPhoneButton() {
-        document.getElementById('validation_phone_submit').style.display = 'block';
+        document.getElementById('vtelegram_validation_phone_submit').style.display = 'block';
     }
 
     setPhoneBlockReadOnly() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_other_phone').style.display = 'block';
-                document.getElementById('validation_phone').classList.add('vtelegram_validation_readonly');
-                document.getElementById('validation_phone').setAttribute('readonly', '');
+                document.getElementById('vtelegram_validation_other_phone').style.display = 'block';
+                document.getElementById('vtelegram_validation_phone').classList.add('vtelegram_validation_readonly');
+                document.getElementById('vtelegram_validation_phone').setAttribute('readonly', '');
             });
     }
 
     unsetPhoneBlockReadOnly() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_other_phone').style.display = 'none';
-                document.getElementById('validation_phone').classList.remove('vtelegram_validation_readonly');
-                document.getElementById('validation_phone').removeAttribute('readonly');
+                document.getElementById('vtelegram_validation_other_phone').style.display = 'none';
+                document.getElementById('vtelegram_validation_phone').classList.remove('vtelegram_validation_readonly');
+                document.getElementById('vtelegram_validation_phone').removeAttribute('readonly');
             });
     }
 
     hidePhoneButton() {
-        document.getElementById('validation_phone_submit').style.display = 'none';
+        document.getElementById('vtelegram_validation_phone_submit').style.display = 'none';
     }
 
     showCodeBlock() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_code_submit').style.display = 'block';
-                document.getElementById('validation_code_row').style = 'overflow: visible; margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0 px';
-                document.getElementById('validation_resend').style.display = 'block';
+                document.getElementById('vtelegram_validation_code_submit').style.display = 'block';
+                document.getElementById('vtelegram_validation_code_row').style = 'overflow: visible; margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0 px';
+                document.getElementById('vtelegram_validation_resend').style.display = 'block';
             });
     }
 
     showCodeButton() {
-        document.getElementById('validation_code_submit').style.display = 'block';
+        document.getElementById('vtelegram_validation_code_submit').style.display = 'block';
     }
 
     setCodeBlockReadOnly() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_code').classList.add('vtelegram_validation_readonly');
-                document.getElementById('validation_code').setAttribute('readonly', '');
+                document.getElementById('vtelegram_validation_code').classList.add('vtelegram_validation_readonly');
+                document.getElementById('vtelegram_validation_code').setAttribute('readonly', '');
             });
     }
 
     unsetCodeBlockReadOnly() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_code').classList.remove('vtelegram_validation_readonly');
-                document.getElementById('validation_code').removeAttribute('readonly');
+                document.getElementById('vtelegram_validation_code').classList.remove('vtelegram_validation_readonly');
+                document.getElementById('vtelegram_validation_code').removeAttribute('readonly');
             });
     }
 
     hideCodeButton() {
-        document.getElementById('validation_code_submit').style.display = 'none';
+        document.getElementById('vtelegram_validation_code_submit').style.display = 'none';
     }
 
     hideCodeBlock() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_code_row').style.display = 'none';
-                document.getElementById('validation_resend').style.display = 'none;';
-                document.getElementById('validation_code_submit').style.display = 'none';
+                document.getElementById('vtelegram_validation_code_row').style.display = 'none';
+                document.getElementById('vtelegram_validation_resend').style.display = 'none;';
+                document.getElementById('vtelegram_validation_code_submit').style.display = 'none';
             });
     }
 
     showPasswordBlock() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_password_submit').style.display = 'block';
-                document.getElementById('validation_password_row').style = 'overflow: visible; margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0 px';
+                document.getElementById('vtelegram_validation_password_submit').style.display = 'block';
+                document.getElementById('vtelegram_validation_password_row').style = 'overflow: visible; margin-top: 0px; margin-bottom: 10px; padding-top: 0px; padding-bottom: 0 px';
             });
     }
 
     showPasswordButton() {
-        document.getElementById('validation_password_submit').style.display = 'block';
+        document.getElementById('vtelegram_validation_password_submit').style.display = 'block';
     }
 
     setPasswordBlockReadOnly() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_password').classList.add('vtelegram_validation_readonly');
-                document.getElementById('validation_password').setAttribute('readonly', '');
+                document.getElementById('vtelegram_validation_password').classList.add('vtelegram_validation_readonly');
+                document.getElementById('vtelegram_validation_password').setAttribute('readonly', '');
             });
     }
 
     unsetPasswordBlockReadOnly() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_password').classList.remove('vtelegram_validation_readonly');
-                document.getElementById('validation_password').removeAttribute('readonly');
+                document.getElementById('vtelegram_validation_password').classList.remove('vtelegram_validation_readonly');
+                document.getElementById('vtelegram_validation_password').removeAttribute('readonly');
             });
     }
 
     hidePasswordButton() {
-        document.getElementById('validation_password_submit').style.display = 'none';
+        document.getElementById('vtelegram_validation_password_submit').style.display = 'none';
     }
 
     hidePasswordBlock() {
         this._formInsertionPromise
             .then(() => {
-                document.getElementById('validation_password_submit').style.display = 'none';
-                document.getElementById('validation_password_row').style.display = 'none';
+                document.getElementById('vtelegram_validation_password_submit').style.display = 'none';
+                document.getElementById('vtelegram_validation_password_row').style.display = 'none';
             });
+    }
+
+    showResendCodeBlock() {
+        document.getElementById('vtelegram_validation_resend').style.display = 'block';
+    }
+
+    hideResendCodeBlock() {
+        console.log('hideResend');
+        document.getElementById('vtelegram_validation_resend').style.display = 'none';
     }
 
     clearPhoneValidationErrorHTML() {
         this._formInsertionPromise
-            .then(() => document.getElementById('validation_submit_result').innerHTML = '');
+            .then(() => document.getElementById('vtelegram_validation_submit_result').innerHTML = '');
     }
 
     phoneValidationErrorHTML(errorString) {
         this._formInsertionPromise
-            .then(() => document.getElementById('validation_submit_result').innerHTML =
+            .then(() => document.getElementById('vtelegram_validation_submit_result').innerHTML =
                 `<div class="vtelegram_msg msg error"><div class="msg_text">${errorString}</div></div>`);
+    }
+
+    startTimer(timeSeconds) {
+        let tId = setInterval(() => {
+
+            let seconds = timeSeconds % 60
+            let minutes = timeSeconds / 60 % 60
+            if (timeSeconds <= 0) {
+                console.log(timeSeconds + ' ' + this._resendTimerId + ' finished');
+                document.getElementById('vtelegram_validation_resend').innerHTML = "<a id=\"validation_resend_lnk\">Отправить код повторно</a>";
+                this.clearTimer();
+                document.getElementById('validation_resend_lnk').addEventListener('click', this.resendCodeHandler);
+            } else {
+                let strTimer = `Отправить код через ${Math.trunc(minutes)}:${seconds}`;
+                document.getElementById('vtelegram_validation_resend').innerHTML = strTimer;
+            }
+            --timeSeconds;
+        }, 1000);
+
+        return tId;
+    }
+
+    resetTimer(timeSeconds) {
+        let seconds = timeSeconds % 60;
+        let minutes = timeSeconds / 60 % 60;
+        let strTimer = `Отправить код через ${Math.trunc(minutes)}:${seconds}`;
+        document.getElementById('vtelegram_validation_resend').innerHTML = strTimer;
+
+        this.clearTimer();
+        return this.startTimer(timeSeconds);
+    }
+
+    clearTimer() {
+        console.log('clear timer ' + this._resendTimerId);
+        if (this._resendTimerId !== undefined)
+            clearInterval(this._resendTimerId);
+        this._resendTimerId = undefined
     }
 
     errorHandler(error) {
@@ -333,6 +399,9 @@ class TelegramAuth {
                 this.setCodeBlockReadOnly();
                 this.hideCodeBlock();
                 this.showPasswordBlock();
+                this.hideResendCodeBlock();
+                this.clearTimer();
+
                 this.phoneValidationErrorHTML(' <b>Ошибка авторизации</b>.<br>Аккаунт защищен двухфакторной авторизацией. Введите пароль.');
                 break;
 
@@ -341,4 +410,3 @@ class TelegramAuth {
         }
     }
 }
-

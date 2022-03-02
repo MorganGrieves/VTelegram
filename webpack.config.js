@@ -3,12 +3,12 @@ const path = require('path');
 module.exports = {
     mode: 'production',
     entry: {
-        content: './src/content.js',
-        background: './src/background.js'
+        content: './public/js/content.js',
+        background: './public/js/background.js'
     },
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, 'app')
+        path: path.resolve(__dirname, 'build/js/')
     },
     performance: {
         hints: false,

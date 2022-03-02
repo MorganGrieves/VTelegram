@@ -1,7 +1,6 @@
 const Config = require('../../config.json');
 
 // методы для взаимодействия c Tg API
-const Config = require('../../config.json');
 const MTProto = require('@mtproto/core/envs/browser');
 const {sleep} = require('@mtproto/core/src/utils/common');
 
