@@ -21,7 +21,7 @@ Using ready components like React is a good choice to escape unforeseen conseque
 - [ ] **Support Firefox and Opera addons.**
 - [ ] **Add attachments: video, pictures and audio.**
 - [ ] **Add the possibility to sign exporting messages by VKontakte chat members' phonenumbers or usernames.**
-- [ ] **Add save button to cloud disks like Google Drive,** if someone is gonna to import by hand.
+- [ ] **Add save button to cloud disks like Google Drive,** if someone is going to import by hand.
 
 # About authors
 The project has been inspired by teachers of my university. The first team of developers had created sort of demo application and passed,
