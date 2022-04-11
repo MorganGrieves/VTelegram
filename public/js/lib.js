@@ -1,3 +1,5 @@
+const Constants = require('./constants');
+
 function transformWindows1251ToUTF8(response) {
     const transformedBody = response.body
         .pipeThrough(new TextDecoderStream("windows-1251"))
@@ -95,4 +97,18 @@ export function toUTF8Array(str) {
         }
     }
     return utf8;
+}
+
+export function getConvPeerFromLink(link) {
+        const urlParams = new URLSearchParams(link);
+        const selID = urlParams.get(Constants.VK_MSG_ID_PARAM);
+
+        let peer = '';
+        if (selID[0] === 'c') {
+            peer = Constants.CONVERSATION_START_ID + parseInt(selID.slice(1));
+        } else {
+            peer = selID;
+        }
+        
+        return peer;
 }

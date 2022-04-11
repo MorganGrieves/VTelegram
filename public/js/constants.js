@@ -64,7 +64,7 @@ export const errors = {
 
 export const msgBackgroundType = {
     DEFAULT: 0,
-    START_EXPORT: 1
+    START_FETCH_IMPORT: 1
 };
 
 export const msgContentType = {

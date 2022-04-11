@@ -111,7 +111,8 @@ class Settings {
         this._formInsertionPromise
             .then(() => {
                 this.clearConvAddressErrorHTML();
-                this.gChat = null;
+                console.log('clean');
+                //this.gChat = null;
 
                 document.getElementById('vtelegram_settings_address_telegram').innerText = '';
                 document.getElementById('vtelegram_settings_address_telegram').nextSibling.textContent = 'Адрес не введен';
@@ -143,7 +144,16 @@ class Settings {
 
         if (err === Errors.NO_ERROR) {
             this.clearConvAddressErrorHTML();
-
+            
+            let convCode;
+            if (convLink.includes('.me/+'))
+                convCode = convLink.split('.me/+')[1];
+            else if (convLink.includes('joinchat/'))
+                convCode = convLink.split('joinchat/')[1];
+            else
+                convCode = convLink.split('.me/')[1];
+            console.log(convCode);
+            
             document.getElementById('vtelegram_settings_address_telegram').innerText = Constants.TELEGRAM_CNV_PATH;
             document.getElementById('vtelegram_settings_address_telegram').nextSibling.textContent = convCode;
             document.getElementById('vtelegram_chgaddr').classList.remove('vtelegram_unfolded');
@@ -212,8 +222,10 @@ class Settings {
         if (result.state === 'err') {
             return result.data;
         }
+        console.debug('next mess is in settings');
         this.gChat = result.data;
 
+        console.debug(this.gChat);
         return Errors.NO_ERROR;
     }
 

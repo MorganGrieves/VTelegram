@@ -20,7 +20,7 @@ class StartImport {
 
                 formDom.getElementById('vtelegram_start_import_back_button').addEventListener('click',
                     (event) => Emitter.emit('event:start-import-back', {}));
-                
+
                 formDom.getElementById('vtelegram_start_import_exit_telegram_button').addEventListener('click', 
                     (event) => {
                         Emitter.emit('event:telegram-exit', {});

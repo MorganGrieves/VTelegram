@@ -7,6 +7,10 @@
     "browser_action": {
         "default_popup": "index.html"
     },
+    "background": {
+        "scripts": [ "js/background.js" ],
+        "persistent": false
+    },
     "content_scripts": [
         {
             "matches": ["https://vk.com/*", "http://vk.com/*"],
@@ -19,7 +23,8 @@
         "tabs",
         "identity",
         "storage",
-        "https://www.googleapis.com/*"
+        "https://www.googleapis.com/*",
+        "https://my.telegram.org/apps/*"
     ],
     "oauth2": {
         "client_id": "516717924129-pcm31all0chsqiktm1rrle98m0ekrbmm.apps.googleusercontent.com",

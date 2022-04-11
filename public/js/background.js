@@ -1,6 +1,7 @@
 const Constants = require("./constants");
 const Lib = require('./lib');
 
+const TgLib = require('./tg-lib');
 const Drive = require("./drive");
 const ExportLib = require('./export/export-lib');
 
@@ -14,16 +15,15 @@ chrome.tabs.onUpdated.addListener(
     }
 );
 
-chrome.runtime.onMessage.addListener(
-    async function (message) {
-        if (message.type === Constants.msgBackgroundType.START_EXPORT) {
-            console.log('START EXPORT!!!');
-            await ExportLib.exportHistory(message.text);
-            Lib.createFile(ExportLib.gImportedData.text, 'file.txt', 'plain/text');
-        }
-        return true;
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    console.log(request);
+    if (request.type === Constants.msgBackgroundType.START_FETCH_IMPORT) {
+        ExportLib.exportHistory(request.vkPeer)
+        .then(response => TgLib.startImport(request.tgChat, response.text))
+        .then(sendResponse({status: 'ok'}));
     }
-);
+    return true;
+});
 
 // Пример отправки данных ИЗ content.js В background.js
 // chrome.runtime.sendMessage({

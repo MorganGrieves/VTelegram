@@ -2,6 +2,9 @@ const Emitter = require('./event-emitter').default;
 const Errors = require('./../constants').errors;
 const TgLib = require('./../tg-lib');
 const ExportLib = require('./../export/export-lib');
+const Constants = require('./../constants');
+
+const Lib = require('./../lib');
 
 const mainForm = new MainForm();
 export default mainForm;
@@ -11,7 +14,8 @@ class MainForm {
 
     _telegramAuth = undefined;
     _settings = undefined;
-    _peopleImport = undefined;
+//this part for next versions
+//    _peopleImport = undefined;
     _startImport = undefined;
 
     constructor() {
@@ -23,13 +27,13 @@ class MainForm {
                 let formDom = new DOMParser().parseFromString(data, 'text/html');
                 formDom.getElementsByClassName('vtelegram_box_x_button')[0].addEventListener('click', event => this.close());
                 document.getElementById('box_layer').appendChild(formDom.body.firstElementChild);
-                
-                document.addEventListener('click',
-                    (event) => {
-                        let isClickInside = document.getElementById('vtelegram_main_form').contains(event.target);
-                        if (!isClickInside)
-                            this.close();
-                    }, true);
+
+//                 document.addEventListener('click',
+//                     (event) => {
+//                         let isClickInside = document.getElementById('vtelegram_main_form').contains(event.target);
+//                         if (!isClickInside)
+//                             this.close();
+//                     }, true);
             })
             .then(() => {
                 this._telegramAuth = require('./telegram-auth').default;
@@ -42,37 +46,50 @@ class MainForm {
                 this._settings = require('./settings').default;
                 Emitter.subscribe('event:settings-completed', data => {
                     this.hideBody();
-                    this._peopleImport.show();
-                });
-
-                this._peopleImport = require('./people-import').default;
-                Emitter.subscribe('event:people-import-completed', data => {
-                    this.hideBody();
                     this._startImport.show();
                 });
-                Emitter.subscribe('event:people-import-back', data => {
-                    this.hideBody();
-                    this._settings.show();
-                });
+
+//                 this._peopleImport = require('./people-import').default;
+//                 Emitter.subscribe('event:people-import-completed', data => {
+//                     this.hideBody();
+//                     this._startImport.show();
+//                 });
+//                 Emitter.subscribe('event:people-import-back', data => {
+//                     this.hideBody();
+//                     this._settings.show();
+//                 });
 
                 // Начинаем экспорт, а затем импорт
                 this._startImport = require('./start-import').default;
                 Emitter.subscribe('event:start-import', async data => {
-                    this.close();
-                    ExportLib.startExport();
-                    // !!!!! здесь импорт
-                    await TgLib.startImport(Settings.gChat, ExportLib.gImportedData.text);
+                    // --- packing data for background ---
+                    let peer = Lib.getConvPeerFromLink(location.search);
+                    let requiredExportData = {
+                        tgChat: this._settings.gChat,
+                        vkPeer: peer,
+                        type: Constants.msgBackgroundType.START_FETCH_IMPORT
+                    };                    
+                    // -----------------------------------
+                    await ExportLib.exportHistory(requiredExportData.vkPeer)
+                    .then(response => TgLib.startImport(requiredExportData.tgChat, response.text));
+                    
+//                     chrome.runtime.sendMessage(requiredExportData, (response) => {
+//                         console.log("response ");
+//                         console.log(response);
+//                         if (response.status === 'ok')
+//                             this.close();
+//                     });
                 });
                 Emitter.subscribe('event:start-import-back', data => {
                     this.hideBody();
-                    this._peopleImport.show();
+                    this._settings.show();
                 });
 
                 Emitter.subscribe('event:telegram-exit', data => {
                     this.hideBody();
                     this._telegramAuth.clean();
                     this._settings.clean();
-                    this._peopleImport.clean();
+ //                   this._peopleImport.clean();
                     this._startImport.clean();
                     this._telegramAuth.show();
                 });
@@ -106,7 +123,7 @@ class MainForm {
                 let exportButton = document.getElementById('ui_rmenu_export_vt');
                 this._telegramAuth.clean();
                 this._settings.clean();
-                this._peopleImport.clean();
+//                this._peopleImport.clean();
                 this._startImport.clean();
 
                 document.body.classList.remove('layers_shown');

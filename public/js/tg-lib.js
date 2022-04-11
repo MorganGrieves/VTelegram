@@ -244,8 +244,11 @@ export async function getUsersByChat(gChat) {
 
 // Запускает процесс импорта после всех настроек
 export async function startImport(gChat, data) {
+    console.log('startImport');
+    console.log(gChat, data);
+    console.log(await TgCore.getAllChats(''));
     console.log(await TgCore.checkHistoryImport(data));
-
+    
     let inputPeer = null;
     if(gChat.chat._ === "chat") {
         inputPeer = {
@@ -263,17 +266,18 @@ export async function startImport(gChat, data) {
     }
     console.log(await TgCore.checkHistoryImportPeer(inputPeer));
 
-    const inputFile = await upload_file(data, 'import_file.txt');
-
-    inputPeer = {
-        _: 'inputPeerChannel',
-        channel_id: gChat.chat.id,
-        access_hash: gChat.chat.access_hash
-    };
+    const inputFile = await upload_file(data, 'Chat_WhatsApp.txt');
+    console.log(inputFile, inputPeer);
+//     inputPeer = {
+//         _: 'inputPeerChannel',
+//         channel_id: gChat.chat.id,
+//         access_hash: gChat.chat.access_hash
+//     };
+    console.log(inputPeer);
     let initHistoryCallback = await TgCore.initHistoryImport({
         peer: inputPeer,
         file: inputFile,
-        media: 0, // изменить
+        media_count: 0
     });
     console.log(initHistoryCallback)
 
@@ -312,6 +316,7 @@ async function upload_file(data, name) {
         md5_checksum: CryptoJS.MD5(data)
     };
 
+    console.log(inputFile);
     console.log('pre-init');
 
     return inputFile;
