@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
-import VTWelcome from './VTWelcome';
-import VTImportListItem from './VTImportListItem';
+import VTelegramAuthForm from './vk_interface/VTelegramAuthForm';
 
 function App() {
-  return (<VTImportListItem />);
+  return (<VTelegramAuthForm />);
 }
 
 export default App;

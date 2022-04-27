@@ -1,29 +1,31 @@
 const Constants = require("./constants");
-const Lib = require('./lib');
+//const Lib = require('./lib');
 
-const Drive = require("./drive");
-const ExportLib = require('./export/export-lib');
+//const Drive = require("./drive");
+//const ExportLib = require('./export/export-lib');
 
-chrome.tabs.onUpdated.addListener(
+window.chrome.tabs.onUpdated.addListener(
     function (tabId, changeInfo, tab) {
         if (changeInfo.url) {
-            chrome.tabs.sendMessage(tabId, {
+            window.chrome.tabs.sendMessage(tabId, {
                 type: Constants.UPDATE_TABS_MSG
             });
         }
     }
 );
 
-chrome.runtime.onMessage.addListener(
-    async function (message) {
-        if (message.type === Constants.msgBackgroundType.START_EXPORT) {
-            console.log('START EXPORT!!!');
-            await ExportLib.exportHistory(message.text);
-            Lib.createFile(ExportLib.gImportedData.text, 'file.txt', 'plain/text');
-        }
-        return true;
-    }
-);
+
+
+// chrome.runtime.onMessage.addListener(
+//     async function (message) {
+//         if (message.type === Constants.msgBackgroundType.START_EXPORT) {
+//             console.log('START EXPORT!!!');
+//             await ExportLib.exportHistory(message.text);
+//             Lib.createFile(ExportLib.gImportedData.text, 'file.txt', 'plain/text');
+//         }
+//         return true;
+//     }
+// );
 
 // Пример отправки данных ИЗ content.js В background.js
 // chrome.runtime.sendMessage({
