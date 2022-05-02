@@ -5,16 +5,16 @@ import {Link, TooltipTag, Button, P, Line, Header, Gray, PromoCard, FormLayout, 
 class VTSettingsForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { popup: false,
-            selected: []
-        };
+//         this.state = {
+//             popup: false,
+//             selected: []
+//         };
     }
 
     render() {
         return (
             <div>
-            <Button onClick={ () =>  this.setState({popup:!this.state.popup})}>Open page</Button>
-            {this.state &&  this.state.popup ?
+            {this.props.open ?
             <ModalDialog confirmText="Далее" footerLeft={<Button mode="destructive" rel="noopener noreferrer" target="_blank">Выйти из Телеграм</Button>}  onClose={ ()=> this.setState({popup:false})} onConfirm={()=>this.setState({popup:false})} header="Настройки ВТелеграм" style={{padding: 0 }}>
             <div className="vtelegram_box">
                 <div id="vtelegram_settings_result" className="vtelegram_settings_result"></div>
