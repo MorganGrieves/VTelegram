@@ -10,20 +10,22 @@ const Errors = require('./../constants').errors;
 // const ExportLib = require('./../export/export-lib');
 
 class Main extends React.Component {
-//     state = {
-//         authOpen: React.createRef(),
-//         settingsOpen: false,
-//         startOpen: false
-//     }
-    authOpen = React.createRef()
+    authRef = React.createRef();
+    settingsRef = React.createRef();
 
     constructor(props) {
         super(props);
+        this.state = {
+            tgChat: null
+        };
 
         const authContainer = document.createElement('div');
         document.body.appendChild(authContainer);
-        ReactDOM.render(<VTelegramAuthForm ref={ this.authOpen } onCompleted={ this.authCompleted() } />, authContainer);
-//        ReactDOM.render(<VTSettingsForm />, document.body);
+        ReactDOM.render(<VTelegramAuthForm ref={ this.authRef } />, authContainer);
+
+        const settingsContainer = document.createElement('div');
+        document.body.appendChild(settingsContainer);
+        ReactDOM.render(<VTSettingsForm ref={ this.settingsRef } />, settingsContainer);
 //        ReactDOM.render(<VTStartImportForm/>, container);
 
 //         this._formInsertionPromise = fetch(chrome.runtime.getURL('./html/main-form.html'))
@@ -80,17 +82,14 @@ class Main extends React.Component {
 //            });
     }
 
-    authCompleted() {
-        this.setState({ authOpen: false, settingsOpen: true });
-    }
-
     show() {
         //const result = await TgLib.isAuthorized();
         //console.log(result);
 
         //if (!result)
-            this.authOpen.current.show();
+            //this.authRef.current.show();
             console.log('show');
+            this.settingsRef.current.show();
         //else
 //            this.setState({ settingsOpen: true });
     }

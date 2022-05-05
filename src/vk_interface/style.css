@@ -1,3 +1,7 @@
+.vtelegram_settings_address_error {
+    margin-bottom: 20px;
+}
+
 .vtelegram_container.vtelegram_hidden {
     display: none;
 }
@@ -282,7 +286,7 @@ h4.vtelegram_subheader {
 
 .vtelegram_settings_label {
     width: 145px;
-    line-height: 16px;
+    line-height: 24px;
     float: left;
     padding: 6px 10px 6px 0px;
 }
@@ -352,7 +356,7 @@ h4.vtelegram_subheader {
 
 .vtelegram_settings_line.vtelegram_unfolded {
     background-color: #fafbfc;
-    margin: -1px -15px 0;
+    margin: -1px -20px 0;
     border-top: 1px solid #dce1e6;
     cursor: default;
     padding-left: 20px;
