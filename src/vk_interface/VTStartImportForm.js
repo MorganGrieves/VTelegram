@@ -41,7 +41,7 @@ class VTStartImportForm extends React.Component {
             <ModalDialog footer={ <div className="vtelegram_dialog_footer">
             <div><Button mode="destructive" target="_blank" onClick={ this.telegramExitButtonClickHandle }>Выйти из Телеграм</Button></div>
             <div>
-                <Button mode="secondary" target="_blank" onClick={ this.backButtonClickHandle } style={{ margineRight: '8px' }}>Назад</Button>
+                <Button mode="secondary" target="_blank" onClick={ this.backButtonClickHandle } style={{ marginRight: '8px' }}>Назад</Button>
                 <Button mode="primary" target="_blank" onClick={ this.importButtonClickHandle } >Импортировать</Button>
             </div>
         </div> } onClose={ () => this.setState({popup: false }) } header="Импорт ВТелеграм" style={{padding: 0 }}>
