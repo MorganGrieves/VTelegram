@@ -31,8 +31,7 @@
     width: 160px;
     height: 160px;
     margin: 0 auto 25px;
-    background: url('https://pixelbox.ru/wp-content/uploads/2021/09/anime-gif-discord-41.gif') no-repeat center;
-    background-size: 160px, 160px;
+    display: block;
 }
 
 .vtelegram_validation_text {

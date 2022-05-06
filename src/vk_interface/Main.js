@@ -12,6 +12,7 @@ const Errors = require('./../constants').errors;
 class Main extends React.Component {
     authRef = React.createRef();
     settingsRef = React.createRef();
+    startImportRef = React.createRef();
 
     constructor(props) {
         super(props);
@@ -26,7 +27,10 @@ class Main extends React.Component {
         const settingsContainer = document.createElement('div');
         document.body.appendChild(settingsContainer);
         ReactDOM.render(<VTSettingsForm ref={ this.settingsRef } />, settingsContainer);
-//        ReactDOM.render(<VTStartImportForm/>, container);
+
+        const startImportContainer = document.createElement('div');
+        document.body.appendChild(startImportContainer);
+        ReactDOM.render(<VTStartImportForm ref={ this.startImportRef } />, startImportContainer);
 
 //         this._formInsertionPromise = fetch(chrome.runtime.getURL('./html/main-form.html'))
 //             .then(response => {
@@ -89,7 +93,7 @@ class Main extends React.Component {
         //if (!result)
             //this.authRef.current.show();
             console.log('show');
-            this.settingsRef.current.show();
+            this.startImportRef.current.show();
         //else
 //            this.setState({ settingsOpen: true });
     }

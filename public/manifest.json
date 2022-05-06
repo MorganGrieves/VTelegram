@@ -32,7 +32,6 @@
         "128": "icon128.png"
     },
     "web_accessible_resources": [
-        "res/images/*",
-        "html/*"
+        "images/*"
     ]
 }

@@ -28,12 +28,6 @@ const config = {
       template: "./public/index.html",
       hash: true
     }),
-//     new CopyPlugin([
-//       {
-//         from: "chrome/icons",
-//         to: "icons"
-//       }
-//     ]),
     new WebpackExtensionManifestPlugin({
       config: {
         base: baseManifest
@@ -52,8 +46,8 @@ const config = {
         use: ["style-loader", "css-loader"]
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
-        use: ["file-loader"]
+        test: /\.(png|svg|jpe?g|gif)$/,
+        use: ['file-loader']
       }
     ]
   },
