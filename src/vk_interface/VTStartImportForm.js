@@ -2,6 +2,8 @@ import React from 'react';
 import '@happysanta/vk-app-ui/dist/vkappui.css';
 import {Button, P, ModalDialog } from "@happysanta/vk-app-ui";
 
+const Emitter = require('./EventEmitter').default;
+
 class VTStartImportForm extends React.Component {
     chanGif = chrome.extension.getURL('images/chan.gif');
 
@@ -13,11 +15,15 @@ class VTStartImportForm extends React.Component {
     }
 
     importButtonClickHandle = (event) => {
-
+        Emitter.emit('event:start-import', {});
     }
 
-    cancelButtonClickHandle = (event) => {
+    backButtonClickHandle = (event) => {
+        Emitter.emit('event:start-import-back', {});
+    }
 
+    telegramExitButtonClickHandle = (event) => {
+        Emitter.emit('event:telegram-exit', {});
     }
 
     show() {
@@ -32,7 +38,13 @@ class VTStartImportForm extends React.Component {
         return (
             <div>
             {this.state &&  this.state.popup ?
-            <ModalDialog confirmText="Импортировать" cancelText="Назад" footerLeft={<Button mode="destructive" target="_blank">Выйти из Телеграм</Button>}  onClose={ () => this.setState({popup: false }) } onConfirm={ this.importButtonClickHandle } header="Импорт ВТелеграм" style={{padding: 0 }}>
+            <ModalDialog footer={ <div className="vtelegram_dialog_footer">
+            <div><Button mode="destructive" target="_blank" onClick={ this.telegramExitButtonClickHandle }>Выйти из Телеграм</Button></div>
+            <div>
+                <Button mode="secondary" target="_blank" onClick={ this.backButtonClickHandle } style={{ margineRight: '8px' }}>Назад</Button>
+                <Button mode="primary" target="_blank" onClick={ this.importButtonClickHandle } >Импортировать</Button>
+            </div>
+        </div> } onClose={ () => this.setState({popup: false }) } header="Импорт ВТелеграм" style={{padding: 0 }}>
                 <div className="vtelegram_box">
                     <div className="vtelegram_box_body" style={{display: 'block', padding: '30px 25px'}}>
                         <div>

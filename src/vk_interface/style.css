@@ -56,6 +56,13 @@
     margin: 10px auto 0;
 }
 
+.vtelegram_dialog_footer {
+    padding: 14px 25px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+}
+
 [dir]
 .vtelegram_validation_skip {
     padding-top: 10px;

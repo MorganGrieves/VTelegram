@@ -7,6 +7,7 @@ import ResendCountDownTimer from './ResendCountDownTimer';
 
 //const TgLib = require('../tg-lib');
 const Errors = require('../constants').errors;
+const Emitter = require('./EventEmitter').default;
 
 class VTelegramAuthForm extends React.Component {
     phoneInput = React.createRef();
@@ -98,7 +99,7 @@ class VTelegramAuthForm extends React.Component {
         if (error === Errors.NO_ERROR) {
             this.resetForm();
 
-            //Emitter.emit('event:auth-completed', {});
+            Emitter.emit('event:auth-completed', {});
         } else {
             this.setState({ sendCodeButtonDisabled: false });
             this.errorHandler(error);

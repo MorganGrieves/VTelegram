@@ -5,6 +5,7 @@ import {Link, TooltipTag, Button, P, Line, Gray, Input, ModalDialog, Notify } fr
 
 const Constants = require('../constants');
 const Errors = Constants.errors;
+const Emitter = require('./EventEmitter').default;
 
 class VTSettingsForm extends React.Component {
     addressBlock = React.createRef();
@@ -23,6 +24,10 @@ class VTSettingsForm extends React.Component {
             addrInputValue: '',
             currentCode: 'Адрес не введен'
         };
+    }
+
+    nextButtonClickHandle = (event) => {
+        Emitter.emit('event:settings-completed', {});
     }
 
     changeButtonClickHandle = async (event) => {
@@ -57,9 +62,9 @@ class VTSettingsForm extends React.Component {
         this.addressBlock.current.classList.remove('vtelegram_unfolded');
     }
 
-    exitTelegramClickHandle = async (event) => {
+    telegramExitButtonClickHandle = async (event) => {
 //         await TgLib.logOut()
-//         Emitter.emit('event:telegram-exit', {});
+         Emitter.emit('event:telegram-exit', {});
     }
 
     changeLinkClickHandle = async (event) => {
@@ -102,7 +107,12 @@ class VTSettingsForm extends React.Component {
         return (
             <div>
             {this.state &&  this.state.popup ?
-            <ModalDialog confirmText="Далее" padding={false} footerLeft={<Button onClick={ this.exitTelegramClickHandle } mode="destructive" rel="noopener noreferrer" target="_blank">Выйти из Телеграм</Button>}  onClose={ () => this.setState({popup:false})} onConfirm={()=>this.setState({popup:false})} header="Настройки ВТелеграм" style={{padding: 0 }}>
+            <ModalDialog padding={ false } footer={ <div className="vtelegram_dialog_footer">
+            <div><Button mode="destructive" target="_blank" onClick={ this.telegramExitButtonClickHandle }>Выйти из Телеграм</Button></div>
+            <div>
+                <Button mode="primary" target="_blank" onClick={ this.nextButtonClickHandle }>Далее</Button>
+            </div>
+        </div> } onClose={ () => this.setState({popup:false})} header="Настройки ВТелеграм" style={{padding: 0 }}>
             <div className="vtelegram_box">
                 <div className="vtelegram_settings_result"></div>
                 <div className="vtelegram_settings_panel vtelegram_clear_fix" >
